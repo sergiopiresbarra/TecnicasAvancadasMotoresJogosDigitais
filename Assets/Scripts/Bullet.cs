@@ -22,7 +22,6 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         trailRenderer = GetComponent<TrailRenderer>();
-        //collider = GetComponent<BoxCollider>();
         sphereCollider = GetComponent<SphereCollider>();
 
         m_Rigidbody = GetComponent<Rigidbody>();
@@ -33,16 +32,12 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Pega a velociade inicial da BB e imprime no console
         if(pin == false){
             Debug.Log("velocidade inicial:"+m_Rigidbody.velocity.magnitude.ToString());
-            //StartCoroutine(WaitForFunction());
             pin = true;
         }
 
-        //transform.position += Mathf.Sqrt(m_Rigidbody.velocity.magnitude) * backSpinDrag * Vector3.up * Time.deltaTime;
-        
-
-        
         //Usando OverLapBox para calcular a Colisão entre projetil e algum objeto
         Collider[] colliders = Physics.OverlapBox(transform.position, sphereCollider.center / 2, transform.rotation, LayerMask.GetMask("hittable"));
 
@@ -58,7 +53,6 @@ public class Bullet : MonoBehaviour
 
     void FixedUpdate()
     {
-
         //Debug.DrawRay(transform.position, m_Rigidbody.velocity.normalized, Color.green, 211, false);
         
         Vector3 magnusDirection = Vector3.Cross(m_Rigidbody.velocity, transform.right).normalized;
@@ -75,31 +69,16 @@ public class Bullet : MonoBehaviour
     public void SetDirection(Vector3 direction){
         velocity = direction * speed;
     }
-
+    //Define a velocidade inicial do projétil
     public void SetSpeed(float s){
         speed = s;
     }
-
+    //Define a quantidade do efeito hop-up na BB
     public void SetBackSpinDrag(float b){
         backSpinDrag = b;
     }
 
-    IEnumerator WaitForFunction()
-    {
-        yield return new WaitForSeconds(0.01f); //0.01f
-        Debug.Log("velocidade inicial:"+m_Rigidbody.velocity.magnitude.ToString());
-         
-    }
-
-    public float GetRigidbodyVelocityMagnitude(){
-        try{
-            return m_Rigidbody.velocity.magnitude;
-        }
-        catch{
-            return 0f;
-        }
-    }
-
+    //Desativa ou Ativa efeito de Trail
     public void DisableEnableTrail(bool b){
         trailRenderer.enabled = b;
     }

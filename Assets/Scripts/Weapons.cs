@@ -22,7 +22,7 @@ public class Weapons : MonoBehaviour
     {
         if(other.gameObject.layer == 8){ 
             objGun = GameObject.Find("Weapon");
-            objGun.GetComponent<Gun>().SetWeaponType(weaponType);
+            objGun.GetComponent<Gun>().SetWeaponType(weaponType); //envia o tipo de arma que foi colidida
        }
     }
 }

@@ -15,9 +15,6 @@ public class Gun : MonoBehaviour
     public float impulseGun = 0f; //força de impulso sobre o projetil
     public float backSpinDrag = 0f; //controlhe de hop-up da BB
 
-    Transform bullet;
-    Vector3 positionBullet;
-
     public GameObject pistol, ak, shotgun;
 
     bool isFiring = false;
@@ -28,29 +25,28 @@ public class Gun : MonoBehaviour
     public Text textQtdBBs;
 
     private void Awake() {
-
-        //fpsCam = GetComponent<FirstPersonCamera>();
-        shotSpawn  = transform.Find("shotSpawn");
-
+        shotSpawn  = transform.Find("shotSpawn"); //posição de nascimento da BB
     }
     // Start is called before the first frame update
     void Start()
     {
-        SetWeaponType(0);
+        SetWeaponType(0);//Define a arma inicial do player na cena, 0->nenhuma arma
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {   //Checa se Mouse foi clicado, Se a arma nao é do tipo 0,
+        //Se algum disparo está em andamento, e se tem quantidade suficiente de BBs na arma.
         if (Input.GetKey(KeyCode.Mouse0) && weapon != 0 && isFiring == false && qtdBBs > 0)
         {
-            //Função de tiro, chamada toda vez que o botão do mouse for pressionado
+            //Função de tiro
             ShootBullet();
         }
+        //Calcula o tempo entre tiros(cada arma tem o seu tempo de disparos)
         timeLastShoot -= Time.deltaTime;
         if(timeLastShoot <= 0){isFiring = false;}
     }
-
+    //Escolhe qual arma vai ser usada pelo player(efeito visual ou skin)
     void WeaponType(int o){
         switch (o)
         {
@@ -79,10 +75,11 @@ public class Gun : MonoBehaviour
 
     void ShootBullet(){
         isFiring = true;
+        //Tempo de disparos na arma
         switch (weapon)
         {
             case 1:
-                timeLastShoot = 0.7f;
+                timeLastShoot = 0.3f;
             break;
             case 2:
                 timeLastShoot = 0.1f;
@@ -93,8 +90,6 @@ public class Gun : MonoBehaviour
         }
         //Instanciação do projetil, atravez da posição do ponto "shotSpawn" na arma
         Transform bulletObj = Instantiate(bulletPrefab, shotSpawn.position, shotSpawn.rotation);
-        bullet = bulletObj;
-        positionBullet = bullet.position;
         bulletObj.GetComponent<Rigidbody>().mass = mass;
         bulletObj.GetComponent<Bullet>().SetSpeed(impulseGun);
         bulletObj.GetComponent<Bullet>().SetBackSpinDrag(backSpinDrag);
@@ -113,8 +108,8 @@ public class Gun : MonoBehaviour
             bulletObj.GetComponent<Bullet>().SetDirection(fpsCam.GetForwardDirection());
         }
         //Debug.Log(fpsCam.GetForwardDirection());
-        --qtdBBs;
-        textQtdBBs.text = qtdBBs.ToString();
+        --qtdBBs;//Decrementa as BBs a cada tiro
+        textQtdBBs.text = qtdBBs.ToString(); //mostra a qauntidade de BBs na tela
     }
 
     public void SetMass(float m){
